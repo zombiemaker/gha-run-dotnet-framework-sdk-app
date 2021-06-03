@@ -1,0 +1,26 @@
+# GitHub Action Metadata file for defining the action
+name: 'Run .NET Framework SDK Program'
+description: 'Executes program operation within a Docker container. For projects using .NET Framework 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2.'
+author: 'ZombieMaker'
+inputs:
+  dotnet-framework-version:
+    description: '.NET Framework version'
+    required: true
+    default: '4.8'
+  command:
+    description: 'Command and parameters'
+    required: true
+    default: ''
+  working-directory:
+    description: 'Directory where .NET solution or project files are located'
+    required: true
+    default: '${{ github.workspace }}'
+runs:
+  using: "composite"
+  steps:
+    - name: Check Action Runner current working directory
+      run: write-host "Current working directory is $(pwd)"
+      shell: pwsh
+    - name: Execute command using task container
+      run: Import-Module ${{ github.action_path }}\scripts\my-pshell-module.psm1; Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -CommandString "${{ inputs.command }}" -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}"
+      shell: pwsh
