@@ -1,6 +1,17 @@
 # GitHub Action For Running .NET Framework SDK Apps
 
-This is a GitHub Action that uses the Docker container images provided by Microsoft that contains .NET Framework SDK.
+This GitHub Action runs programs included in the Docker container images provided by Microsoft that contains .NET Framework SDKs.  It enables GitHub Runner server machines to run different versions of .NET Framework build programs and libraries without having to install them on the GitHub Runner machines.
+
+.NET Framework versions supported are:
+
+* 4.8
+* 4.7.2
+* 4.7.1
+* 4.7
+* 4.6.2
+* 3.5
+* 3.0
+* 2.5
 
 This action should only be executed on GitHub Action Runners that:
 * Use Microsoft Windows Server 20H2
@@ -10,9 +21,10 @@ This action should only be executed on GitHub Action Runners that:
 
 ## Parameters
 
-* dotnet-framework-version: target version to build .NET Framework artifacts
+* dotnet-framework-version
+  * Target version to build .NET Framework artifacts
   * Required
-  * Options:
+  * Supported options:
     * 4.8
     * 4.7.2
     * 4.7.1
@@ -22,9 +34,10 @@ This action should only be executed on GitHub Action Runners that:
     * 3.0
     * 2.5
   * Default: 4.8
-* command:  command line program and parameters to be executed
+* command
+  * Command line program and parameters to be executed
   * Required
-  * Command options:
+  * Supported commands:
     - dotnet
     - msbuild
     - nuget
@@ -53,9 +66,8 @@ This action should only be executed on GitHub Action Runners that:
     - winmdexp (Windows Runtime Metadata Export Tool)
     - winres (Windows Forms Resource Editor)
     - vstest.console
-  * working-directory: working directory on the GitHub Action Runner host where the .NET Framework solution or project file is located after pulling the git repository
-    * Required
-    * Default: ${{ github.workspace }}
-
-
-
+  * Default: ""
+* working-directory
+  * Working directory on the GitHub Action Runner host where the .NET Framework solution or project file is located after pulling the git repository
+  * Required
+  * Default: ${{ github.workspace }}
