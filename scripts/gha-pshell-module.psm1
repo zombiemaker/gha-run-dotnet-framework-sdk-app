@@ -111,8 +111,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
     param (
         [Parameter (Mandatory)][string] $DotnetFrameworkVersion,
         [Parameter (Mandatory)][string] $CommandString,
-        [string] $PowerShellHostWorkingDirectory,
-        [switch] $Debug = 0
+        [string] $PowerShellHostWorkingDirectory
     )
 
     if ($Debug) { write-host "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
