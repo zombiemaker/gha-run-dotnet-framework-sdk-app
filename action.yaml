@@ -22,5 +22,5 @@ runs:
       run: write-host "Current working directory is $(pwd)"
       shell: pwsh
     - name: Execute command using task container
-      run: Import-Module ${{ github.action_path }}\scripts\my-pshell-module.psm1; Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -CommandString "${{ inputs.command }}" -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}"
+      run: Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -CommandString "${{ inputs.command }}" -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}"
       shell: pwsh
