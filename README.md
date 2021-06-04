@@ -1,6 +1,8 @@
 # GitHub Action For Running .NET Framework SDK Apps
 
-This GitHub Action runs programs included in the Docker [container images provided by Microsoft that contains .NET Framework SDKs](https://hub.docker.com/_/microsoft-dotnet-framework-sdk/).  It enables GitHub Runner server machines to run different versions of .NET Framework build programs and libraries without having to install them on the GitHub Runner machines.
+This GitHub Action runs programs included in the Docker [container images provided by Microsoft that contains .NET Framework SDKs](https://hub.docker.com/_/microsoft-dotnet-framework-sdk/).  It enables self-hosted GitHub Runner server machines to run different versions of .NET Framework build programs and libraries without having to install them on the GitHub Runner machines.
+
+## Limitations
 
 .NET Framework versions supported are:
 
@@ -13,7 +15,7 @@ This GitHub Action runs programs included in the Docker [container images provid
 * 3.0
 * 2.5
 
-This action should only be executed on GitHub Action Runners that:
+Because of limitations in available Microsoft-provided container images, this action should only be executed on GitHub Action Runners that:
 
 * Use Microsoft Windows Server 20H2
 * Have PowerShell Core 7+ installed
@@ -72,3 +74,9 @@ This action should only be executed on GitHub Action Runners that:
   * Working directory on the GitHub Action Runner host where the .NET Framework solution or project file is located after pulling the git repository
   * Required
   * Default: ${{ github.workspace }}
+
+  ## Known Issues
+
+  * Microsoft-provided container images are multi-gigabytes large. Image download and extraction times can take 30+ minutes to hours depending on network bandwidth.  
+  
+  When executing the action for the first time on a GitHub Action Runner host machine, Docker will not have a copy of the image stored in its local repository.  This may result in a very long job execution time or a timeout.  After the image has been downloaded, subsequent executions will run much faster.

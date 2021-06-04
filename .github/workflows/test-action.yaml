@@ -29,9 +29,9 @@ jobs:
         with:
           repository: ${{ github.repository }}
           ref: 'main'
-      - name: Build sample console-app-solution
-        uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
-        with:
-          dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
-          command: 'dotnet build console-app.sln'
-          working-directory: '${{ github.workspace}}\sample-projects\console-app-solution'
+      # - name: Build sample console-app-solution
+      #   uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
+      #   with:
+      #     dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
+      #     command: 'dotnet build console-app.sln'
+      #     working-directory: '${{ github.workspace}}\sample-projects\console-app-solution'
