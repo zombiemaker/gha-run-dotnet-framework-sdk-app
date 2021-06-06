@@ -43,14 +43,16 @@ runs:
         
         # Option 3
         # Replacing quotes with backtick + quote the backtick is passed through
-        $inputString = '${{ inputs.command }}'; # Literal quotes will not work if string has single quotes `
-        $inputString = $inputString.Replace('"', '`"'); `
-        $inputString = $inputString.Replace("'", "`'"); `
-        write-host "inputString = $inputString"; `
-        Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
+        # $inputString = '${{ inputs.command }}'; # Literal quotes will not work if string has single quotes `
+        # $inputString = $inputString.Replace('"', '`"'); `
+        # $inputString = $inputString.Replace("'", "`'"); `
+        # write-host "inputString = $inputString"; `
+        # Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
+        # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
         
         # Option 4
-        # Encapsulating the command string with single quotes only works when the command string only contains double quotes
-        #Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString '${{ inputs.command }}'
+        # Encoding command string in base64
+        $inputStringBase64 = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes(${{ inputs.command }})); `
+        Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
+        Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandStringBase64 "$inputStringBase64";
       shell: pwsh

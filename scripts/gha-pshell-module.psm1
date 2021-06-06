@@ -110,20 +110,22 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
     param (
         [Parameter (Mandatory)][string] $DotnetFrameworkVersion,
-        [Parameter (Mandatory)][string] $CommandString,
+        [Parameter (Mandatory)][string] $CommandStringBase64,
         [string] $PowerShellHostWorkingDirectory
     )
 
     if ($Debug) { write-host "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
-    if ($Debug) { write-host "DEBUG: Command: $CommandString" }
+    if ($Debug) { write-host "DEBUG: Command: $CommandStringBase64" }
     if ($Debug) { write-host "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
 
-    write-host CommandString before removing escaped quotes
+    write-host CommandString in Base64 before removing escaped quotes
+    write-host $CommandStringBase64
+    
+    # Decoding Base64
+    $CommandString = [System.Txt.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($CommandStringBase64))
+    write-host CommandString decoded
     write-host $CommandString
     
-    # Removing any escaped quotes
-    $CommandString = $CommandString.Replace('`"', '"'); `
-    $CommandString = $CommandString.Replace("`'", "'"); `
 
     write-host CommandString after removing escaped quotes
     write-host $CommandString
