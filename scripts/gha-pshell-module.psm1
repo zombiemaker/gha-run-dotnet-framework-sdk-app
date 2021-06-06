@@ -118,11 +118,11 @@ function Invoke-ContainerizedDotnetSdkCommand {
     if ($Debug) { write-host "DEBUG: Command: $CommandStringBase64" }
     if ($Debug) { write-host "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
 
-    write-host CommandString in Base64 before removing escaped quotes
+    write-host CommandString in Base64
     write-host $CommandStringBase64
     
     # Decoding Base64
-    $CommandString = [System.Txt.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($CommandStringBase64))
+    $CommandString = [System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String($CommandStringBase64))
     write-host CommandString decoded
     write-host $CommandString
     
