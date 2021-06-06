@@ -43,7 +43,7 @@ runs:
         
         # Option 3
         # Replacing quotes with backtick + quote the backtick is passed through
-        $inputString = ${{ inputs.command }}; `
+        $inputString = '${{ inputs.command }}'; # Literal quotes will not work if string has single quotes `
         $inputString = $inputString.Replace('"', '`"'); `
         $inputString = $inputString.Replace("'", "`'"); `
         write-host "inputString = $inputString"; `
