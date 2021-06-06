@@ -26,7 +26,7 @@ runs:
       shell: pwsh
     - name: Execute command using task container
       run: |
-        $inputString = "${{ inputs.command }}".Replace('"', '`"'); `
+        $inputString = '${{ inputs.command }}'.Replace('"', '`"'); `
         write-host "inputString = $inputString"; `
         Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
         Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
