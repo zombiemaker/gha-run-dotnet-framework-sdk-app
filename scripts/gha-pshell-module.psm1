@@ -122,8 +122,8 @@ function Invoke-ContainerizedDotnetSdkCommand {
     write-host $CommandString
     
     # Removing any escaped quotes
-    $CommandString = $CommandString.Replace('"', '`"'); `
-    $CommandString = $CommandString.Replace("'", "`'"); `
+    $CommandString = $CommandString.Replace('`"', '"'); `
+    $CommandString = $CommandString.Replace("`'", "'"); `
 
     write-host CommandString after removing escaped quotes
     write-host $CommandString
