@@ -118,6 +118,16 @@ function Invoke-ContainerizedDotnetSdkCommand {
     if ($Debug) { write-host "DEBUG: Command: $CommandString" }
     if ($Debug) { write-host "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
 
+    write-host CommandString before removing escaped quotes
+    write-host $CommandString
+    
+    # Removing any escaped quotes
+    $CommandString = $CommandString.Replace('"', '`"'); `
+    $CommandString = $CommandString.Replace("'", "`'"); `
+
+    write-host CommandString after removing escaped quotes
+    write-host $CommandString
+
     switch ($DotnetFrameworkVersion) {
         {$_ -in "4.8", "4.7.2", "4.7.1", "4.7", "4.6.2"} {
             write-host "Executing the following command:"
