@@ -36,17 +36,18 @@ runs:
         # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString ${{ inputs.command}}
 
         # Option 2
-        $inputString = '${{ inputs.command }}'; `
-        Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
+        # Results in error if $input.command contains single quotes
+        # $inputString = '${{ inputs.command }}'; `
+        # Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
+        # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
         
         # Option 3
         # Replacing quotes with backtick + quote the backtick is passed through
-        #$inputString = '${{ inputs.command }}'.Replace('"', '`"'); `
-        #$inputString = '${{ inputs.command }}'.Replace("'", "`'"); `
-        #write-host "inputString = $inputString"; `
-        #Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        #Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
+        $inputString = ""${{ inputs.command }}"".Replace('"', '`"'); `
+        $inputString = ""${{ inputs.command }}"".Replace("'", "`'"); `
+        write-host "inputString = $inputString"; `
+        Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
+        Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
         
         # Option 4
         # Encapsulating the command string with single quotes only works when the command string only contains double quotes
