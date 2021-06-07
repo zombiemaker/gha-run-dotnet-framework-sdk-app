@@ -16,8 +16,10 @@ function Invoke-ContainerizedDotnetSdkCommand {
     - 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2
     - 3.5, 3.0, and 2.5
 
-    .PARAMETER CommandString
-    The name of the executable program and its parameters contained in the Docker container image to execute.
+    .PARAMETER CommandHereString
+    In PowerShell here string format, the name of the executable program and its parameters contained in the Docker container image to execute.
+
+    Using here string format because the command string can contain single and double quotes that make string handling difficult.
 
     The available executable programs will be different in the different Docker container images used.
 
@@ -110,15 +112,16 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
     param (
         [Parameter (Mandatory)][string] $DotnetFrameworkVersion,
-        [Parameter (Mandatory)][string] $CommandString,
+        [Parameter (Mandatory)][string] $CommandHereString,
         [string] $PowerShellHostWorkingDirectory
     )
 
     if ($Debug) { write-host "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
-    if ($Debug) { write-host "DEBUG: Command: $CommandString" }
+    if ($Debug) { write-host "DEBUG: Command: $CommandHereString" }
     if ($Debug) { write-host "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
 
-    $CommandString = $CommandString.Split(@(“n", "n`r”), [StringSplitOptions]::None)[0]
+    # Convert here string to an array to extract the first line
+    $CommandString = $CommandHereString.Split(@(“n", "n`r”), [StringSplitOptions]::None)[0]
     write-host Extracted command string
     write-host $CommandString
     
@@ -134,10 +137,10 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 #Invoke-Expression "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
                 & docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
             } else {
-                write-host "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
+                write-host "docker run --rm -v `"$PowerShellHostWorkingDirectory:c:\Users\ContainerAdministrator\Documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
                 # Had issues with quotations in the $CommandString when executing docker program
-                #Invoke-Expression "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
-                & docker run --rm -v "$PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents" -w "c:/Users/ContainerAdministrator/Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
+                #Invoke-Expression "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
+                & docker run --rm -v "$PowerShellHostWorkingDirectory:c:\Users\ContainerAdministrator\Documents" -w "c:/Users/ContainerAdministrator/Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
             }
             
             continue
@@ -153,10 +156,10 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 #Invoke-Expression "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
                 & docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString
             } else {
-                write-host "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
+                write-host "docker run --rm -v `"$PowerShellHostWorkingDirectory:c:\Users\ContainerAdministrator\Documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
                 # Had issues with quotations in the $CommandString when executing docker program
                 #Invoke-Expression "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
-                & docker run --rm -v "$PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents" -w "c:/Users/ContainerAdministrator/Documents" mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString
+                & docker run --rm -v "$PowerShellHostWorkingDirectory:c:\Users\ContainerAdministrator\Documents" -w "c:/Users/ContainerAdministrator/Documents" mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString
             }
             continue
         }
