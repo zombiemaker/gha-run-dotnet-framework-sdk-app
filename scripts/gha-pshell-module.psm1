@@ -117,12 +117,11 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
 
     param (
-        [Parameter (Mandatory)][string] $DotnetFrameworkVersion,
-        [string] $PowerShellHostWorkingDirectory,
+        [Parameter (Mandatory=$true)][string] $DotnetFrameworkVersion,
+        [Parameter (Mandatory=$false)][string] $PowerShellHostWorkingDirectory,
+        [Parameter (Mandatory=$true)][string] $CommandString,
         [switch] $IsHereString,
-        [switch] $IsUnicodeBase64Encoded,
-        [Parameter (Mandatory)][string] $CommandString
-        
+        [switch] $IsUnicodeBase64Encoded
     )
 
     write-debug DEBUGGING IS ACTIVE
