@@ -182,13 +182,14 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 
                 # Tried using powershell shell
                 # Seem to need to call the command using "powershell -Command <command>" format in order for the bind mount to be available
-                write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\Users\ContainerAdministrator\Documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command { & $CommandString }"
-                & docker run --rm --mount type=bind,"source=$PowerShellHostWorkingDirectory","target=c:\users\containeradministrator\documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command { & $CommandString }
+                # write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\Users\ContainerAdministrator\Documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command { & $CommandString }"
+                # & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:\users\containeradministrator\documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command { & $CommandString}
                 
                 # Tried using CMD shell
                 # Got error when $CommandString contained single quotes
                 # write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\Users\ContainerAdministrator\Documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
                 # & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:\users\containeradministrator\documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+                $callOpParams = @("run", "--rm", "--mount", "type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`"", "-w", "c:\Users\ContainerAdministrator\Documents", "mcr.microsoft.com/dotnet/framework/sdk:4.8", "cmd", "/s", "/c", "$CommandString")
             }
             
             continue
