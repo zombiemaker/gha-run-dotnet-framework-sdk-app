@@ -10,19 +10,15 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
     - mcr.microsoft.com/dotnet/framework/sdk:4.8
     - mcr.microsoft.com/dotnet/framework/sdk:3.5
+    
     .PARAMETER DotnetFrameworkVersion
     The target .NET Framework version to build.  The supported versions are:
 
     - 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2
     - 3.5, 3.0, and 2.5
 
-    .PARAMETER IsHereString
-    Switch to indicate CommandString is in here string format
-    
-    This is used when the command string can contain single and double quotes that make string handling difficult.
-
-    .PARAMETER IsUnicodeBase64Encoded
-    Switch to indicate CommandString is in unicode base64 encoding format
+    .PARAMETER PowerShellHostWorkingDirectory
+    Optional parameter to specify the working directory of the PowerShell host where the command should work in
 
     .PARAMETER CommandString
     In PowerShell here string format, the name of the executable program and its parameters contained in the Docker container image to execute.
@@ -105,9 +101,15 @@ function Invoke-ContainerizedDotnetSdkCommand {
     - winres (Windows Forms Resource Editor)
     - vstest.console
 
-    .PARAMETER PowerShellHostWorkingDirectory
-    Optional parameter to specify the working directory of the PowerShell host where the command should work in
+    .PARAMETER IsHereString
+    Switch to indicate CommandString is in here string format
+    
+    This is used when the command string can contain single and double quotes that make string handling difficult.
 
+    .PARAMETER IsUnicodeBase64Encoded
+    Switch to indicate CommandString is in unicode base64 encoding format
+
+    
     .EXAMPLE
     Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.7 -CommandString "msbuild --help"
     Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.7 -CommandString "dotnet help"
@@ -124,7 +126,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
         [switch] $IsUnicodeBase64Encoded
     )
 
-    write-debug DEBUGGING IS ACTIVE
+    write-debug "DEBUGGING IS ACTIVE"
 
     # if ($Debug) { write-debug "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
     # if ($Debug) { write-debug "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
