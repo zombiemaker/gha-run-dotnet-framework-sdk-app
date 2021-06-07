@@ -173,7 +173,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 
                 # Get error: docker: Error response from daemon: Unrecognised volume spec: invalid volume specification: '/Users/ContainerAdministrator/Documents'
                 #& docker run --rm -v $PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
-                & docker run --rm -v "$PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
+                & docker run --rm -v "$PowerShellHostWorkingDirectory:c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
             }
             
             continue
