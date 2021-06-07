@@ -125,6 +125,8 @@ function Invoke-ContainerizedDotnetSdkCommand {
         
     )
 
+    write-host Debug flag is $Debug
+
     if ($Debug) { write-debug "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
     if ($Debug) { write-debug "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
     if ($Debug) { write-debug "DEBUG: IsHereString: $IsHereString" }
@@ -134,8 +136,18 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
     # Convert here string to an array to extract the first line
     if ($IsHereString) {
+        write-host Command string is in here string format
         $CommandString = $CommandString.Split(@(“n", "n`r”), [StringSplitOptions]::None)[0]
         write-host Extracted command string
+        write-host $CommandString
+    }
+
+    # Decode string 
+    if ($IsUnicodeBase64Encoded) {
+        write-host Command string is in unicode base64 format
+        import module base64 -force
+        $CommandString = ConvertFrom-Base64String($CommandString)
+        write-host Decoded command string
         write-host $CommandString
     }
 
