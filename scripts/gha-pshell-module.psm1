@@ -175,9 +175,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 #& docker run --rm -v $PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
                 & echo "PowerShell invocation operator call"
                 & echo "type=bind,source=$PowerShellHostWorkingDirectory,target=c:/users/containeradministrator/documents"
-                & dir
-                & pwd
-                & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
+                & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 dir;pwd;$commandString
             }
             
             continue
