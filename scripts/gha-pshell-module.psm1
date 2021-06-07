@@ -125,14 +125,18 @@ function Invoke-ContainerizedDotnetSdkCommand {
         
     )
 
-    write-host Debug flag is $Debug
+    write-debug DEBUGGING IS ACTIVE
 
-    if ($Debug) { write-debug "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
-    if ($Debug) { write-debug "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
-    if ($Debug) { write-debug "DEBUG: IsHereString: $IsHereString" }
-    if ($Debug) { write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded" }
-    if ($Debug) { write-debug "DEBUG: Command: $CommandString" }
-    
+    # if ($Debug) { write-debug "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
+    # if ($Debug) { write-debug "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
+    # if ($Debug) { write-debug "DEBUG: IsHereString: $IsHereString" }
+    # if ($Debug) { write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded" }
+    # if ($Debug) { write-debug "DEBUG: Command: $CommandString" }
+    write-debug "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion"
+    write-debug "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory"
+    write-debug "DEBUG: IsHereString: $IsHereString"
+    write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded"
+    write-debug "DEBUG: Command: $CommandString"
 
     # Convert here string to an array to extract the first line
     if ($IsHereString) {
