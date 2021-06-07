@@ -162,12 +162,12 @@ function Invoke-ContainerizedDotnetSdkCommand {
             
             # Had to enclose $PowerShellHostWorkingDirectory with an expression because of the multi-level quotes
             if ($PowerShellHostWorkingDirectory -eq $null) {
-                write-host "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
+                write-host "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString"
                 # Had issues with quotations in the $CommandString when executing docker program
                 #Invoke-Expression "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
                 & docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
             } else {
-                write-host "docker run --rm -v $PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
+                write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:/users/containeradministrator/documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString"
                 # Had issues with quotations in the $CommandString when executing docker program
                 #Invoke-Expression "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
                 
