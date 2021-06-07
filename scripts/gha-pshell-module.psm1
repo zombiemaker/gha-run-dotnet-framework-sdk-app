@@ -16,10 +16,16 @@ function Invoke-ContainerizedDotnetSdkCommand {
     - 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2
     - 3.5, 3.0, and 2.5
 
-    .PARAMETER CommandHereString
-    In PowerShell here string format, the name of the executable program and its parameters contained in the Docker container image to execute.
+    .PARAMETER IsHereString
+    Switch to indicate CommandString is in here string format
+    
+    This is used when the command string can contain single and double quotes that make string handling difficult.
 
-    Using here string format because the command string can contain single and double quotes that make string handling difficult.
+    .PARAMETER IsUnicodeBase64Encoded
+    Switch to indicate CommandString is in unicode base64 encoding format
+
+    .PARAMETER CommandString
+    In PowerShell here string format, the name of the executable program and its parameters contained in the Docker container image to execute.
 
     The available executable programs will be different in the different Docker container images used.
 
