@@ -125,11 +125,11 @@ function Invoke-ContainerizedDotnetSdkCommand {
         
     )
 
-    if ($Debug) { write-host "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
-    if ($Debug) { write-host "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
-    if ($Debug) { write-host "DEBUG: IsHereString: $IsHereString" }
-    if ($Debug) { write-host "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded" }
-    if ($Debug) { write-host "DEBUG: Command: $CommandString" }
+    if ($Debug.IsPresent) { write-host "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion" }
+    if ($Debug.IsPresent) { write-host "DEBUG: PowerShell host working directory: $PowerShellHostWorkingDirectory" }
+    if ($Debug.IsPresent) { write-host "DEBUG: IsHereString: $IsHereString" }
+    if ($Debug.IsPresent) { write-host "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded" }
+    if ($Debug.IsPresent) { write-host "DEBUG: Command: $CommandString" }
     
 
     # Convert here string to an array to extract the first line
