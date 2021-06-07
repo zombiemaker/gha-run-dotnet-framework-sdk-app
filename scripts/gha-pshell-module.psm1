@@ -173,9 +173,10 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 
                 # Get error: docker: Error response from daemon: Unrecognised volume spec: invalid volume specification: '/Users/ContainerAdministrator/Documents'
                 #& docker run --rm -v $PowerShellHostWorkingDirectory:c:/Users/ContainerAdministrator/Documents -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
-                & echo "PowerShell invocation operator call"
-                & echo "type=bind,source=$PowerShellHostWorkingDirectory,target=c:/users/containeradministrator/documents"
-                & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command dir
+                
+                # Bind mounts directory contents are not accessible to programs within the container image if called directly
+                # Seem to need to call the command using "powershell -Command <command>" format in order for the bind mount to be available
+                & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString
             }
             
             continue
