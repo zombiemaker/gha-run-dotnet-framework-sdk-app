@@ -52,7 +52,10 @@ runs:
         
         # Option 4
         # Encoding command string in base64
-        $inputStringBase64 = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('${{ inputs.command }}')); `
+        install-module -name base64 -force; `
+        #$inputStringBase64 = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('${{ inputs.command }}')); `
+        $inputString = ${{ inputs.command }}; `
+        $inputStringBase64 = $(write-host $commandString | ConvertTo-Base64String); `
         Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
         Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandStringBase64 "$inputStringBase64";
       shell: pwsh
