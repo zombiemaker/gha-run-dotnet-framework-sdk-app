@@ -176,7 +176,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 
                 # Bind mounts directory contents are not accessible to programs within the container image if called directly
                 # Seem to need to call the command using "powershell -Command <command>" format in order for the bind mount to be available
-                & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString
+                & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
             }
             
             continue
