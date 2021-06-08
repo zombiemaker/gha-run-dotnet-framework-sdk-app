@@ -141,7 +141,6 @@ function Invoke-ContainerizedDotnetSdkCommand {
         for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
             write-host "Command line [$i]: $($CommandStringArray[$i])"
         }
-        $CommandString=$CommandStringArray[0]
     }
 
     # Decode string 
@@ -187,8 +186,28 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 # Seems to be no difference in using the call operator (&)
                 # write-host "& docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
                 # & docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
-                write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
-                docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+                #write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
+                #docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+
+                # Multi-command
+                for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
+                    write-host "Command line [$i]: $($CommandStringArray[$i])"
+                    $CommandString=$CommandStringArray[$i]
+
+                    # If first command line, create the container
+                    if ($i -eq 0) {
+                        write-host "docker run --cidfile cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
+                        docker run --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+                        $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
+                        write-host "Container ID: $ContainerId"
+                    } else {
+                        write-host "docker exec -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        docker exec -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
+                    }
+                }
+
+                # Remove container
+                docker rm $ContainerId
             }
             
             continue
