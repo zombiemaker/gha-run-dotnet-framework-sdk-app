@@ -1,37 +1,65 @@
 # Manually trigger workflow
-name: Test GitHub Action Based On SDK Image
+name: Test ZombieMaker GitHub Action Based On SDK Image
 on: workflow_dispatch
 jobs:
   test-action:
     name: Test SDK image based action
-    runs-on: [windows-2019]
+    runs-on: [windows, x64, self-hosted, azure, 20H2]
     strategy:
       matrix:
-        dotnet-framework-version: ["4.8", "4.7.2", "4.7.1", "4.7", "4.6.2", "3.5", "3.0", "2.5"]
+        #dotnet-framework-version: ["4.8", "4.7.2", "4.7.1", "4.7", "4.6.2", "3.5", "3.0", "2.5"]
+        dotnet-framework-version: ["4.8"]
     steps:
       - name: Run msbuild help
         uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
         with:
           dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
-          command: 'msbuild --help'
+          command: msbuild --help
       - name: Run dotnet help
         uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
         with:
           dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
-          command: 'dotnet help'
+          command: dotnet help
       - name: Run nuget help
         uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
         with:
           dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
-          command: 'nuget help'
+          command: nuget help
       - name: Checkout git repo
         uses: actions/checkout@v2
         with:
           repository: ${{ github.repository }}
           ref: 'main'
-      # - name: Build sample console-app-solution
-      #   uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
-      #   with:
-      #     dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
-      #     command: 'dotnet build console-app.sln'
-      #     working-directory: '${{ github.workspace}}\sample-projects\console-app-solution'
+      - name: NuGet restore
+        uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
+        with:
+          dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
+          command: nuget restore
+          working-directory: '${{ github.workspace }}\test-apps\dotnet-core-3.1-console-app-solution'
+      - name: Test msbuild with parameters containing double quotes
+        uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
+        with:
+          dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
+          command: msbuild -p:myTestProperty="What a wonderful life" console-app.sln
+          working-directory: '${{ github.workspace }}\test-apps\dotnet-core-3.1-console-app-solution'
+      - name: Test command with parameters containing single quotes
+        uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
+        with:
+          dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
+          command: echo 'What a wonderful life'
+          working-directory: '${{ github.workspace }}\test-apps\dotnet-core-3.1-console-app-solution'
+      - name: Test dotnet build
+        uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
+        with:
+          dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
+          command: dotnet build console-app.sln
+          working-directory: '${{ github.workspace }}\test-apps\dotnet-core-3.1-console-app-solution'
+      - name: Test multi-line command
+        uses: zombiemaker/gha-run-dotnet-framework-sdk-app@v1
+        with:
+          dotnet-framework-version: ${{ matrix.dotnet-framework-version }}
+          command: |
+            echo "Test multi-line #1"
+            echo "Test multi-line #2"
+            echo "Test multi-line #3"
+          working-directory: '${{ github.workspace }}\test-apps\dotnet-core-3.1-console-app-solution'
