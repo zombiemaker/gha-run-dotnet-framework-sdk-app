@@ -118,7 +118,13 @@ function Invoke-ContainerizedDotnetSdkCommand {
     .PARAMETER IsUnicodeBase64Encoded
     Switch to indicate CommandString is in unicode base64 encoding format
 
-    
+    .PARAMETER Debug
+    Switch to activate debug messages
+
+    .PARAMETER Verbose
+    Switch to activate verbose messages
+
+
     .EXAMPLE
     Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.8 -CommandString "msbuild --help"
     
