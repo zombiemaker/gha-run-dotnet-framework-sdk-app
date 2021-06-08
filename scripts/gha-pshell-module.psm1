@@ -18,10 +18,16 @@ function Invoke-ContainerizedDotnetSdkCommand {
     - 3.5, 3.0, and 2.5
 
     .PARAMETER PowerShellHostWorkingDirectory
-    Optional parameter to specify the working directory of the PowerShell host where the command should work in
+    Specifies the working directory of the PowerShell host where the commands should start in
+
+    The value of this parameter will be used to create a Docker bind mount
 
     .PARAMETER CommandString
-    In PowerShell here string format, the name of the executable program and its parameters contained in the Docker container image to execute.
+    Specifies executable program name and its parameters contained in the Docker container image to execute.
+
+    If the CommandString has single or double quotes, it should be in PowerShell here-string format and the IsHereString switch should be used.
+
+    If multiple commands should be executed in sequence, the CommandString should be in PowerShell here-string format where each line is a separate command and its parameters AND the IsHereString switch is used.
 
     The available executable programs will be different in the different Docker container images used.
 
@@ -102,25 +108,48 @@ function Invoke-ContainerizedDotnetSdkCommand {
     - vstest.console
 
     .PARAMETER IsHereString
-    Switch to indicate CommandString is in here string format
+    Indicates the CommandString is in here string format
     
-    This is used when the command string can contain single and double quotes that make string handling difficult.
+    This is used in the following situations:
+    
+    - when the command string contains single and double quotes that make string handling difficult
+    - when multiple programs should be executed in sequence
 
     .PARAMETER IsUnicodeBase64Encoded
     Switch to indicate CommandString is in unicode base64 encoding format
 
     
     .EXAMPLE
-    Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.7 -CommandString "msbuild --help"
+    Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.8 -CommandString "msbuild --help"
+    
     Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.7 -CommandString "dotnet help"
+    
     Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.7 -CommandString "nuget help"
+
+    .EXAMPLE
+    For commands with quotes:
+
+    $commands = @'
+    msbuild -p:DemoProperty1="This is a wonderful parameter" sample-solution.sln
+    '@
+    Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.8 -CommandString $commands -IsHereString
+
+    .EXAMPLE
+    For multiple commands:
+
+    $commands = @'
+    nuget restore
+    msbuild -p:DemoProperty1="This is a wonderful parameter" sample-solution.sln
+    '@
+    Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion 4.8 -CommandString $commands -IsHereString
+
 
     #>
 
 
     param (
         [Parameter (Mandatory=$true)][string] $DotnetFrameworkVersion,
-        [Parameter (Mandatory=$false)][string] $PowerShellHostWorkingDirectory,
+        [Parameter (Mandatory=$false)][string] $PowerShellHostWorkingDirectory = ".\",
         [Parameter (Mandatory=$true)][string] $CommandString,
         [switch] $IsHereString,
         [switch] $IsUnicodeBase64Encoded
@@ -133,7 +162,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
     write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded"
     write-debug "DEBUG: Command: $CommandString"
 
-    # Convert here-string to an array to extract the first line
+    # Convert here-string to an array to extract commands
     if ($IsHereString) {
         write-host Command string is in here string format
         $CommandStringArray = $CommandString -split '\r?\n'

@@ -21,20 +21,22 @@ runs:
     - name: Check Action Runner current working directory
       run: write-host "Current working directory is $(pwd)"
       shell: pwsh
-    # - name: Display command string
-    #   run: |
-    #     $commandString = @'
-    #     ${{ inputs.command }}
-    #     '@; `
-    #     write-host "Command string = $commandString";
-    #   shell: pwsh
+    - name: Display command string
+      run: |
+        $commandString = @'
+        ${{ inputs.command }}
+        '@; `
+        write-host "******* COMMAND STRING *******"; `
+        write-host "$commandString"; `
+        write-host "*******************************"; `
+      shell: pwsh
     
     # Handling command strings that have either double or single quotes
-    # TIP: Do not try to use PowerShell comments in this action definition for action parameters.  
-    # The GitHub Action Runner will simply expand all ${{ inputs.VARIABLE }} even in run comments
+    # TIP: Do not use PowerShell comments in this action definition for action parameters.  
+    # The GitHub Action Runner will simply expand all ${{ inputs.VARIABLE }} even in commented run lines
     - name: Execute command using task container
       run: |
-        # Use here string
+        # Use here-string to encapsulate any single or double quoting
         $inputHereString = @'
         ${{ inputs.command }}
         '@; `
