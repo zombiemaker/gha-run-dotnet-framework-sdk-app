@@ -21,13 +21,13 @@ runs:
     - name: Check Action Runner current working directory
       run: write-host "Current working directory is $(pwd)"
       shell: pwsh
-    - name: Display command string
-      run: |
-        $commandString = @'
-        ${{ inputs.command }}
-        '@; `
-        write-host "Command string = $commandString";
-      shell: pwsh
+    # - name: Display command string
+    #   run: |
+    #     $commandString = @'
+    #     ${{ inputs.command }}
+    #     '@; `
+    #     write-host "Command string = $commandString";
+    #   shell: pwsh
     
     # Handling command strings that have either double or single quotes
     - name: Execute command using task container
@@ -39,7 +39,7 @@ runs:
 
         # Option 2
         # Results in error if $input.command contains single quotes
-        # $inputString = '${{ inputs.command }} hey'; `
+        # $inputString = '${{ inputs.command }}'; `
         # Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
         # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
         
