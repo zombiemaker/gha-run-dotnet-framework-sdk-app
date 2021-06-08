@@ -164,30 +164,30 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
     # Convert here-string to an array to extract commands
     if ($IsHereString) {
-        write-host Command string is in here string format
+        write-verbose "Command string is in here string format"
         $CommandStringArray = $CommandString -split '\r?\n'
         
         # Not working
         # $CommandStringArray = $CommandString.Split("\r?\n",[System.StringSplitOptions]::RemoveEmptyEntries)
 
-        write-host "Number of command lines: $($CommandStringArray.Count)" 
+        write-verbose "Number of command lines: $($CommandStringArray.Count)" 
         for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
-            write-host "Command line [$i]: $($CommandStringArray[$i])"
+            write-verbose "Command line [$i]: $($CommandStringArray[$i])"
         }
     }
 
     # Decode string 
     if ($IsUnicodeBase64Encoded) {
-        write-host Command string is in unicode base64 format
+        write-verbose "Command string is in unicode base64 format"
         import module base64 -force
         $CommandString = ConvertFrom-Base64String($CommandString)
-        write-host Decoded command string
-        write-host $CommandString
+        write-verbose "Decoded command string"
+        write-verbose $CommandString
     }
 
     switch ($DotnetFrameworkVersion) {
         {$_ -in "4.8", "4.7.2", "4.7.1", "4.7", "4.6.2"} {
-            write-host "Executing the following command:"
+            write-verbose "Executing the following command:"
             
             # Had to enclose $PowerShellHostWorkingDirectory with an expression because of the multi-level quotes
             if ($PowerShellHostWorkingDirectory -eq $null) {
@@ -229,15 +229,18 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
                     # If first command line, create the container
                     if ($i -eq 0) {
+                        # Start container
                         # the -t and -d options are to keep the container running
-                        write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
-                        #docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandStringArray
+                        write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c" 
                         docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
+
+                        # Run first command
                         write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     } else {
+                        # Run any commands after the first command
                         write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     }
@@ -260,8 +263,34 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 write-host "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
                 docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString
             } else {
-                write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd /s /c $CommandString"
-                docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd /s /c $CommandString
+                # Multi-command
+                for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
+                    write-host "Command line [$i]: $($CommandStringArray[$i])"
+                    $CommandString=$CommandStringArray[$i]
+
+                    # If first command line, create the container
+                    if ($i -eq 0) {
+                        # Start container
+                        # the -t and -d options are to keep the container running
+                        write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd /s /c" 
+                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd
+                        $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
+                        write-host "Container ID: $ContainerId"
+
+                        # Run first command
+                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
+                    } else {
+                        # Run any commands after the first command
+                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
+                    }
+                }
+
+                # Remove container
+                write-host "Removing container $ContainerId"
+                docker rm --force $ContainerId
+                del .\cid.txt
             }
             continue
         }
