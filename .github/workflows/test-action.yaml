@@ -4,7 +4,7 @@ on: workflow_dispatch
 jobs:
   test-action:
     name: Test SDK image based action
-    runs-on: [windows, x64, self-hosted, azure, 20H2]
+    runs-on: [windows, x64, self-hosted, docker-engine, 20H2]
     strategy:
       matrix:
         #dotnet-framework-version: ["4.8", "4.7.2", "4.7.1", "4.7", "4.6.2", "3.5", "3.0", "2.5"]
