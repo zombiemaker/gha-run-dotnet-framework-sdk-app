@@ -136,7 +136,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
     # Convert here-string to an array to extract the first line
     if ($IsHereString) {
         write-host Command string is in here string format
-        $CommandStringArray = $CommandString.Split(@(“`r”, “`n”), [StringSplitOptions]::RemoveEmptyEntries)
+        $CommandStringArray = $CommandString -split '\r?\n'
         write-host "Number of command lines: $($CommandStringArray.Count)" 
         for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
             write-host "Command line [$i]: $($CommandStringArray[$i])"
@@ -196,7 +196,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
                     # If first command line, create the container
                     if ($i -eq 0) {
-                        write-host "docker run --cidfile .\\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
+                        write-host "docker run --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
                         docker run --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
