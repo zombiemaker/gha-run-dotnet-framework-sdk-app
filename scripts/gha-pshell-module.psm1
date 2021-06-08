@@ -133,12 +133,15 @@ function Invoke-ContainerizedDotnetSdkCommand {
     write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded"
     write-debug "DEBUG: Command: $CommandString"
 
-    # Convert here string to an array to extract the first line
+    # Convert here-string to an array to extract the first line
     if ($IsHereString) {
         write-host Command string is in here string format
-        $CommandString = $CommandString.Split(@(“n", "n`r”), [StringSplitOptions]::None)[0]
-        write-host Extracted command string
-        write-host $CommandString
+        $CommandStringArray = $CommandString.Split(@(“n", "n`r”), [StringSplitOptions]::None)
+        write-host "Number of command lines: $($CommandStringArray.Count)" 
+        for ($i = 0; $i < $CommandStringArray.Count; $i++) {
+            write-host "Command line [$i]: $($CommandStringArray[$i])"
+        }
+        $CommandString=$CommandStringArray[0]
     }
 
     # Decode string 

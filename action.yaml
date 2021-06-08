@@ -30,29 +30,10 @@ runs:
     #   shell: pwsh
     
     # Handling command strings that have either double or single quotes
+    # TIP: Do not try to use PowerShell comments in this action definition for action parameters.  
+    # The GitHub Action Runner will simply expand all ${{ inputs.VARIABLE }} even in run comments
     - name: Execute command using task container
       run: |
-        # Option 1
-        # Results in error if $inputs.command contains quotes
-        # Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString ${{ inputs.command}}
-
-        # Option 2
-        # Results in error if $input.command contains single quotes
-        # $inputString = '${{ inputs.command }}'; `
-        # Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
-        
-        # Option 3
-        # Replacing quotes with backtick + quote the backtick is passed through
-        # $inputString = '${{ inputs.command }}'; # Literal quotes will not work if string has single quotes `
-        # $inputString = $inputString.Replace('"', '`"'); `
-        # $inputString = $inputString.Replace("'", "`'"); # This will error because of single quotes `
-        # write-host "inputString = $inputString"; `
-        # Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        # Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -PowerShellHostWorkingDirectory "${{ inputs.working-directory }}" -CommandString $($inputString)
-        
-        # Option 4
         # Use here string
         $inputHereString = @'
         ${{ inputs.command }}
