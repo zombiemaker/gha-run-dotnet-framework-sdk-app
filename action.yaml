@@ -23,8 +23,10 @@ runs:
       shell: pwsh
     - name: Display command string
       run: |
-        write-host "inputs.command string"; `
-        write-host '${{ inputs.command }}'
+        $commandString = @'
+        ${{ inputs.command }}
+        '@; `
+        write-host "Command string is $commandString"
       shell: pwsh
     # Handling command strings that have either double or single quotes
     
