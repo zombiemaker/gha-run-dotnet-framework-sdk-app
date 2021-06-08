@@ -196,8 +196,9 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
                     # If first command line, create the container
                     if ($i -eq 0) {
-                        write-host "docker run --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
-                        docker run --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+                        # the -t and -d options are to keep the container running
+                        write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
+                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
                     } else {
