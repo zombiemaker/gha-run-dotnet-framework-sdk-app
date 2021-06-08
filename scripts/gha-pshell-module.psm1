@@ -207,7 +207,9 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 }
 
                 # Remove container
-                docker rm $ContainerId
+                write-host "Removing container $ContainerId"
+                docker rm --force $ContainerId
+                del .\cid.txt
             }
             
             continue
