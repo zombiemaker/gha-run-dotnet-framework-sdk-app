@@ -198,12 +198,15 @@ function Invoke-ContainerizedDotnetSdkCommand {
                     if ($i -eq 0) {
                         # the -t and -d options are to keep the container running
                         write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
-                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+                        #docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandStringArray
+                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
+                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     } else {
-                        write-host "docker exec -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
-                        docker exec -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
+                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     }
                 }
 
