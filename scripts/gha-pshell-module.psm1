@@ -108,7 +108,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
     - vstest.console
 
     .PARAMETER IsHereString
-    Indicates the CommandString is in here string format
+    Indicates the CommandString is in here-string format
     
     This is used in the following situations:
     
@@ -294,6 +294,11 @@ function Invoke-ContainerizedDotnetSdkCommand {
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     }
                 }
+
+                # Change file permissions so that operations outside of the container can access files / artifacts
+                # Files created inside a container uses the user ID ContainerAdministrator
+                write-host "Changing file and directory permissions of all content in working directory"
+                icacls *.* /grant *:F /t
 
                 # Remove container
                 write-host "Removing container $ContainerId"
