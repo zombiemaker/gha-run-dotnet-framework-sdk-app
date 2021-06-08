@@ -136,7 +136,8 @@ function Invoke-ContainerizedDotnetSdkCommand {
     # Convert here-string to an array to extract the first line
     if ($IsHereString) {
         write-host Command string is in here string format
-        $CommandStringArray = $CommandString -split '\r?\n'
+        #$CommandStringArray = $CommandString -split '\r?\n'
+        $CommandStringArray = $CommandString.Split('\r?\n',[System.StringSplitOptions]::RemoveEmptyEntries)
         write-host "Number of command lines: $($CommandStringArray.Count)" 
         for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
             write-host "Command line [$i]: $($CommandStringArray[$i])"
