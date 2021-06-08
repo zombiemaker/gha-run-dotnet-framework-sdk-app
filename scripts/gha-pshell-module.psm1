@@ -191,7 +191,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
             
             # Had to enclose $PowerShellHostWorkingDirectory with an expression because of the multi-level quotes
             if ($PowerShellHostWorkingDirectory -eq $null) {
-                write-host "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString"
+                write-verbose "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString"
                 docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
             } else {
                 
@@ -220,24 +220,27 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
                 # Multi-command
                 for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
-                    write-host "Command line [$i]: $($CommandStringArray[$i])"
+                    write-verbose "Command line [$i]: $($CommandStringArray[$i])"
                     $CommandString=$CommandStringArray[$i]
 
                     # If first command line, create the container
                     if ($i -eq 0) {
                         # Start container
                         # the -t and -d options are to keep the container running
-                        write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c" 
+                        write-host "Starting container"
+                        write-verbose "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c" 
                         docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
 
                         # Run first command
-                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        write-host "Executing command line [$i]"
+                        write-verbose "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     } else {
                         # Run any commands after the first command
-                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        write-host "Executing command line [$i]"
+                        write-verbose "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     }
                 }
@@ -252,33 +255,36 @@ function Invoke-ContainerizedDotnetSdkCommand {
         }
 
         {$_ -in "3.5", "3.0", "2.5"} { 
-            write-host "Executing the following command:"
+            write-verbose "Executing the following command:"
 
             # Had to enclose $PowerShellHostWorkingDirectory with an expression because of the multi-level quotes
             if ($PowerShellHostWorkingDirectory -eq $null) {
-                write-host "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
+                write-verbose "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
                 docker run --rm mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString
             } else {
                 # Multi-command
                 for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
-                    write-host "Command line [$i]: $($CommandStringArray[$i])"
+                    write-verbose "Command line [$i]: $($CommandStringArray[$i])"
                     $CommandString=$CommandStringArray[$i]
 
                     # If first command line, create the container
                     if ($i -eq 0) {
                         # Start container
                         # the -t and -d options are to keep the container running
-                        write-host "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd /s /c" 
+                        write-host "Starting container"
+                        write-verbose "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd /s /c" 
                         docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:3.5 cmd
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
 
                         # Run first command
-                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        write-host "Executing command line [$i]"
+                        write-verbose "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     } else {
                         # Run any commands after the first command
-                        write-host "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
+                        write-host "Executing command line [$i]"
+                        write-verbose "docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString"
                         docker exec -t -w `"c:\Users\ContainerAdministrator\Documents`" $ContainerId cmd /s /c $CommandString
                     }
                 }
