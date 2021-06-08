@@ -165,10 +165,10 @@ function Invoke-ContainerizedDotnetSdkCommand {
     # Convert here-string to an array to extract commands
     if ($IsHereString) {
         write-verbose "Command string is in here string format"
-        $CommandStringArray = $CommandString -split '\r?\n'
         
         # Not working
         # $CommandStringArray = $CommandString.Split("\r?\n",[System.StringSplitOptions]::RemoveEmptyEntries)
+        $CommandStringArray = $CommandString -split '\r?\n'
 
         write-verbose "Number of command lines: $($CommandStringArray.Count)" 
         for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
@@ -192,12 +192,8 @@ function Invoke-ContainerizedDotnetSdkCommand {
             # Had to enclose $PowerShellHostWorkingDirectory with an expression because of the multi-level quotes
             if ($PowerShellHostWorkingDirectory -eq $null) {
                 write-host "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command $CommandString"
-                # Had issues with quotations in the $CommandString when executing docker program
-                #Invoke-Expression "docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
                 docker run --rm mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
             } else {
-                # Had issues with quotations in the $CommandString when executing docker program
-                # Invoke-Expression "docker run --rm -v '$($PowerShellHostWorkingDirectory):c:/Users/ContainerAdministrator/Documents' -w 'c:/Users/ContainerAdministrator/Documents' mcr.microsoft.com/dotnet/framework/sdk:3.5 $CommandString"
                 
                 # Using "docker run ... -v" is different from using "docker run ... --mount"
                 # Get error: docker: Error response from daemon: Unrecognised volume spec: invalid volume specification: '/Users/ContainerAdministrator/Documents'
@@ -209,18 +205,18 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 # write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:/users/containeradministrator/documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString"
                 # & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:/users/containeradministrator/documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 $CommandString
                 
-                # Tried using powershell shell
+                # Tried using powershell shell in the containerized process
                 # Seem to need to call the command using "powershell -Command <command>" format in order for the bind mount to be available
                 # write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\Users\ContainerAdministrator\Documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command { & $CommandString }"
                 # & docker run --rm --mount type=bind,source="$PowerShellHostWorkingDirectory",target="c:\users\containeradministrator\documents" -w "c:\Users\ContainerAdministrator\Documents" mcr.microsoft.com/dotnet/framework/sdk:4.8 powershell -Command { & $CommandString}
                 
-                # CMD shell
+                # Used CMD shell in containerized process instead
                 # CMD shell avoids complication of powershell parsing and quote handling
                 # Seems to be no difference in using the call operator (&)
                 # write-host "& docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
                 # & docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
-                #write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
-                #docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
+                # write-host "docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString"
+                # docker run --rm --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c $CommandString
 
                 # Multi-command
                 for ($i = 0; $i -lt $CommandStringArray.Count; $i++) {
