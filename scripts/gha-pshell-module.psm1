@@ -121,6 +121,12 @@ function Invoke-ContainerizedDotnetSdkCommand {
     .PARAMETER IsUnicodeBase64Encoded
     Switch to indicate CommandString is in unicode base64 encoding format
 
+    .PARAMETER RemoveContainer
+    Switch to remove container after executing command
+
+    .PARAMETER RemoveContainerImage
+    Switch to remove container image after executing command
+
     .PARAMETER Debug
     Switch to activate debug messages
 
@@ -163,6 +169,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
         [Parameter (Mandatory=$true)][string] $CommandString,
         [switch] $IsHereString,
         [switch] $IsUnicodeBase64Encoded,
+        [switch] $RemoveContainer,
         [switch] $RemoveContainerImage
     )
 
