@@ -233,7 +233,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
                     if ($i -eq 0) {
                         # Build container image
                         $containerImageName = "dotnet-framework-sdk-$(new-guid):local"
-                        docker build --tag $containerImageName -file dotnet-fw-sdk-4.8.Dockerfile ..\docker-context
+                        docker build --tag $containerImageName --file dotnet-fw-sdk-4.8.Dockerfile ..\docker-context
                         
                         # Start container
                         # the -t and -d options are to keep the container running
