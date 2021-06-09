@@ -231,11 +231,18 @@ function Invoke-ContainerizedDotnetSdkCommand {
 
                     # If first command line, create the container
                     if ($i -eq 0) {
+                        # Build container image
+                        $containerImageName = "dotnet-framework-sdk-$(new-guid):local"
+                        docker build --tag $containerImageName -file dotnet-fw-sdk-4.8.Dockerfile ..\docker-context
+                        
                         # Start container
                         # the -t and -d options are to keep the container running
                         write-host "Starting container"
-                        write-verbose "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c" 
-                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd
+                        #write-verbose "docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd /s /c" 
+                        #docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd
+
+                        # Using custom image
+                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$PowerShellHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" $containerImageName cmd
                         $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
                         write-host "Container ID: $ContainerId"
 
@@ -255,6 +262,9 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 write-host "Removing container $ContainerId"
                 docker rm --force $ContainerId
                 del .\cid.txt
+
+                # Remove container image
+                docker rmi $containerImageName
             }
             
             continue
@@ -298,7 +308,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 # Change file permissions so that operations outside of the container can access files / artifacts
                 # Files created inside a container uses the user ID ContainerAdministrator
                 write-host "Changing file and directory permissions of all content in working directory"
-                icacls *.* /grant *:F /t
+                icacls * /grant Everyone:F /t
 
                 # Remove container
                 write-host "Removing container $ContainerId"
