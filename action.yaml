@@ -1,6 +1,6 @@
 # GitHub Action Metadata file for defining the action
 name: 'Run .NET Framework SDK Program'
-description: 'Executes program operation within a Docker container. For projects using .NET Framework 4.8, 4.7.2, 4.7.1, 4.7, and 4.6.2.'
+description: 'Executes program operation within a Microsoft Windows Docker container. Supports projects using .NET Framework 4.8, 4.7.2, 4.7.1, 4.7, 4.6.2, 3.5, 3.0, and 2.5'
 author: 'ZombieMaker'
 inputs:
   dotnet-framework-version:
@@ -18,9 +18,16 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # - name: Check GitHub Action Runner host for Docker
+    #   run: |
+    #     docker ps; `
+    #     docker version
+    #   shell: pwsh
+    
     - name: Check Action Runner current working directory
       run: write-host "Current working directory is $(pwd)"
       shell: pwsh
+    
     - name: Display command string
       run: |
         $commandString = @'
