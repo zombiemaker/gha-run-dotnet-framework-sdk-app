@@ -2,6 +2,8 @@
 
 This GitHub Action runs programs included in the Docker [container images provided by Microsoft that contains .NET Framework SDKs](https://hub.docker.com/_/microsoft-dotnet-framework-sdk/).  It enables self-hosted GitHub Runner server machines to run different versions of .NET Framework build programs and libraries without having to install them on the GitHub Runner machines.
 
+![Sequence Diagram](../assets/containerized-github-action-seq-diag.png?raw=true)
+
 ## Limitations
 
 .NET Framework versions supported are:
