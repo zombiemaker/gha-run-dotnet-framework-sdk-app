@@ -239,7 +239,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
                         # Build container image
                         $containerImageName = "dotnet-framework-sdk-$(new-guid):local"
                         $dockerContext = "$($GitHubActionPath)\docker-context"
-                        write-host "docker build --tag $containerImageName --file dotnet-fw-sdk-4.8.Dockerfile $dockerContext"
+                        write-host "docker build --tag $containerImageName --file $dockerContext\dotnet-fw-sdk-4.8.Dockerfile $dockerContext"
                         docker build --tag $containerImageName --file $dockerContext\dotnet-fw-sdk-4.8.Dockerfile $dockerContext
                         
                         # Start container
