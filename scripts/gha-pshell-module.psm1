@@ -162,7 +162,8 @@ function Invoke-ContainerizedDotnetSdkCommand {
         [Parameter (Mandatory=$true)][string] $GitHubActionPath,
         [Parameter (Mandatory=$true)][string] $CommandString,
         [switch] $IsHereString,
-        [switch] $IsUnicodeBase64Encoded
+        [switch] $IsUnicodeBase64Encoded,
+        [switch] $RemoveContainerImage
     )
 
     write-debug "DEBUGGING IS ACTIVE"
@@ -171,6 +172,8 @@ function Invoke-ContainerizedDotnetSdkCommand {
     write-debug "DEBUG: GitHub Action path: $GitHubActionPath"
     write-debug "DEBUG: IsHereString: $IsHereString"
     write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded"
+    write-debug "DEBUG: RemoveContainer: $RemoveContainer"
+    write-debug "DEBUG: RemoveContainerImage: $RemoveContainerImage"
     write-debug "DEBUG: Command: $CommandString"
 
     # Convert here-string to an array to extract commands
@@ -249,8 +252,9 @@ function Invoke-ContainerizedDotnetSdkCommand {
                         #docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$ContainerHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" mcr.microsoft.com/dotnet/framework/sdk:4.8 cmd
 
                         # Using custom image
-                        docker run -t -d --cidfile .\cid.txt --mount type=bind,source=`"$ContainerHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" $containerImageName cmd
-                        $ContainerId = (get-content -Path .\cid.txt -TotalCount 1)
+                        $containerIdFile = ".\cid--$(new-guid).txt"
+                        docker run -t -d --cidfile $containerIdFile --mount type=bind,source=`"$ContainerHostWorkingDirectory`",target=`"c:\users\containeradministrator\documents`" -w `"c:\Users\ContainerAdministrator\Documents`" $containerImageName cmd
+                        $ContainerId = (get-content -Path $containerIdFile -TotalCount 1)
                         write-host "Container ID: $ContainerId"
 
                         # Run first command
@@ -266,12 +270,17 @@ function Invoke-ContainerizedDotnetSdkCommand {
                 }
 
                 # Remove container
-                write-host "Removing container $ContainerId"
-                docker rm --force $ContainerId
-                del .\cid.txt
+                if ($RemoveContainer) {
+                    write-host "Removing container $ContainerId"
+                    docker rm --force $ContainerId
+                    del $containerIdFile
+                }
 
                 # Remove container image
-                docker rmi $containerImageName
+                if ($RemoveContainerImage) { 
+                    write-host "Removing container image $containerImageName"
+                    docker rmi $containerImageName
+                }
             }
             
             continue
