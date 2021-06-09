@@ -168,6 +168,7 @@ function Invoke-ContainerizedDotnetSdkCommand {
     write-debug "DEBUGGING IS ACTIVE"
     write-debug "DEBUG: .NET Framework version entered: $DotnetFrameworkVersion"
     write-debug "DEBUG: PowerShell host working directory: $ContainerHostWorkingDirectory"
+    write-debug "DEBUG: GitHub Action path: $GitHubActionPath"
     write-debug "DEBUG: IsHereString: $IsHereString"
     write-debug "DEBUG: IsUnicodeBase64Encoded: $IsUnicodeBase64Encoded"
     write-debug "DEBUG: Command: $CommandString"

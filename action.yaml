@@ -48,5 +48,5 @@ runs:
         ${{ inputs.command }}
         '@; `
         Import-Module ${{ github.action_path }}\scripts\gha-pshell-module.psm1; `
-        Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -ContainerHostWorkingDirectory "${{ inputs.working-directory }}" -GitHubActionPath "${{ github.action_path }}" -CommandString $inputHereString -IsHereString;
+        Invoke-ContainerizedDotnetSdkCommand -DotnetFrameworkVersion ${{ inputs.dotnet-framework-version }} -ContainerHostWorkingDirectory "${{ inputs.working-directory }}" -GitHubActionPath "${{ github.action_path }}" -CommandString $inputHereString -IsHereString -Debug;
       shell: pwsh
