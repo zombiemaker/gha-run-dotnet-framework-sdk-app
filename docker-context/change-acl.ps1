@@ -5,7 +5,7 @@ $identity = "BUILTIN\Users"
 $fileSystemRights = "FullControl"
 $type = "Allow"
 $isProtected = $false
-$preserveInheritance = $false
+$preserveInheritance = $true
 # Create new rule
 $fileSystemAccessRuleArgumentList = $identity, $fileSystemRights, $type
 $fileSystemAccessRule = new-object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList $fileSystemAccessRuleArgumentList
